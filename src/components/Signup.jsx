@@ -2,8 +2,8 @@ import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { object, string } from "yup";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "../firebase";
 
 const schema = object({
     username: string().required("Username is required"),
@@ -45,6 +45,19 @@ function Signup() {
             navigate("/user");
         },
     });
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+
+            // User info
+            console.log("✅ Google user:", result.user);
+        } catch (error) {
+            console.error("❌ Google login error:", error.message);
+        }
+
+        navigate("/user");
+    };
 
     const { errors, values, touched } = formik;
 
@@ -100,6 +113,18 @@ function Signup() {
 
                 <button className="bg-blue-500 text-white rounded-lg text-lg p-3 mt-10" type="submit">
                     Sign up
+                </button>
+
+                <button
+                    onClick={handleGoogleLogin}
+                    className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg mt-5 transition"
+                >
+                    <img
+                        src="https://www.svgrepo.com/show/475656/google-color.svg"
+                        alt="Google logo"
+                        className="w-6 h-6"
+                    />
+                    Continue with Google
                 </button>
 
                 <NavLink className="text-center text-blue-500 mt-5 underline" to={"/login"}>already have a account </NavLink>

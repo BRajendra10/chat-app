@@ -1,6 +1,6 @@
 // firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 // import { getFirestore } from "firebase/firestore";
 
 // Your config (from Firebase console)
@@ -19,4 +19,5 @@ const app = initializeApp(firebaseConfig);
 
 // Export what you need
 export const auth = getAuth(app);       // For login/logout
+export const googleProvider = new GoogleAuthProvider();
 // export const db = getFirestore(app);    // For chat messages

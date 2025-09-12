@@ -37,7 +37,7 @@ function UserCard() {
     return (
         <div className="w-[20rem] bg-white shadow-lg rounded-xl p-5 flex flex-col items-center">
             <img
-                src={"https://i.pravatar.cc/100"} // fallback avatar
+                src={user.photoURL}
                 alt="user avatar"
                 className="w-20 h-20 rounded-full mb-4"
             />

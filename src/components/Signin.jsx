@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "../firebase"; // make sure you export auth from firebase.js
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, googleProvider } from "../firebase"; // make sure you export auth from firebase.js
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 
 function Signin() {
     const navigate = useNavigate();
@@ -17,6 +17,19 @@ function Signin() {
             console.log("User logged in:", userCredential.user);
         } catch (err) {
             setError(err.message);
+        }
+
+        navigate("/user");
+    };
+
+    const handleGoogleLogin = async () => {
+        try {
+            const result = await signInWithPopup(auth, googleProvider);
+
+            // User info
+            console.log("✅ Google user:", result.user);
+        } catch (error) {
+            console.error("❌ Google login error:", error.message);
         }
 
         navigate("/user");
@@ -56,7 +69,17 @@ function Signin() {
                 >
                     Sign In
                 </button>
-
+                <button
+                    onClick={handleGoogleLogin}
+                    className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg mt-5 transition"
+                >
+                    <img
+                        src="https://www.svgrepo.com/show/475656/google-color.svg"
+                        alt="Google logo"
+                        className="w-6 h-6"
+                    />
+                    Continue with Google
+                </button>
                 <NavLink className="text-center text-blue-500 mt-5 underline" to={"/signup"}>don't  have a account </NavLink>
             </form>
         </div>
