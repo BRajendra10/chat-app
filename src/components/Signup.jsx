@@ -1,7 +1,7 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { object, string } from "yup";
+import { NavLink, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 
@@ -37,12 +37,12 @@ function Signup() {
                 await userCredential.user.reload();
 
                 console.log("✅ User signed up:", userCredential.user.displayName);
+                navigate("/user");
             } catch (error) {
                 console.error("❌ Error signing up:", error.message);
             }
 
             formik.resetForm();
-            navigate("/user");
         },
     });
 
@@ -111,7 +111,7 @@ function Signup() {
                     <p className="text-red-500 text-sm">{errors.password}</p>
                 )}
 
-                <button className="bg-blue-500 text-white rounded-lg text-lg p-3 mt-10" type="submit">
+                <button className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-lg p-3 mt-10" type="submit">
                     Sign up
                 </button>
 
@@ -127,7 +127,7 @@ function Signup() {
                     Continue with Google
                 </button>
 
-                <NavLink className="text-center text-blue-500 mt-5 underline" to={"/login"}>already have a account </NavLink>
+                <NavLink className="text-center text-blue-500 mt-5 underline" to={"/login"}>already have a account? login</NavLink>
             </form>
         </div>
     );

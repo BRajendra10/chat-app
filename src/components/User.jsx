@@ -18,12 +18,12 @@ function UserCard() {
     const handleLogout = async () => {
         try {
             await signOut(auth);
+            
             console.log("✅ Logged out");
+            navigate("/login")
         } catch (error) {
             console.error("❌ Logout error:", error.message);
         }
-
-        navigate("/login")
     };
 
     if (!user) {
