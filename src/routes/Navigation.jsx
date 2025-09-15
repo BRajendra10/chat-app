@@ -1,15 +1,15 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom';
-import Signin from '../components/Signin';
-import Signup from '../components/Signup';
-import UserCard from '../components/User';
+import Signin from '../screens/Signin';
+import Signup from '../screens/Signup';
+import Home from '../screens/Home';
 
 function Navigation() {
   return (
     <Routes>
-        <Route path="/login" element={<Signin />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/user" element={<UserCard />} />
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Signin />} />
+      <Route path="/signup" element={<Signup />} />
     </Routes>
   )
 }

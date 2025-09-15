@@ -1,6 +1,4 @@
 import React from "react";
-import Signup from "./components/Signup";
-import UserCard from "./components/User";
 import Navigation from "./routes/Navigation";
 
 function App() {

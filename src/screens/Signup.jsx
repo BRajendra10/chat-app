@@ -2,8 +2,10 @@ import React from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { NavLink, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../firebase";
+
+import { doc, setDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db } from "../firebase";
 
 const schema = object({
     username: string().required("Username is required"),
@@ -27,17 +29,24 @@ function Signup() {
                     values.email,
                     values.password
                 );
-
-                // Update profile with username
+                // Update profile with username once
                 await updateProfile(userCredential.user, {
                     displayName: values.username,
                 });
-
-                // 🔥 Reload user to make sure displayName updates
+                // Save to Firestore
+                await setDoc(doc(db, "users", userCredential.user.uid), {
+                    uid: userCredential.user.uid,
+                    displayName: values.username,
+                    email: values.email,
+                    photoURL: userCredential.user.photoURL,
+                    online: true,
+                    createdAt: new Date()
+                });
+                // Reload to make sure local user object updates
                 await userCredential.user.reload();
 
                 console.log("✅ User signed up:", userCredential.user.displayName);
-                navigate("/user");
+                navigate("/");
             } catch (error) {
                 console.error("❌ Error signing up:", error.message);
             }
@@ -46,18 +55,33 @@ function Signup() {
         },
     });
 
-    const handleGoogleLogin = async () => {
-        try {
-            const result = await signInWithPopup(auth, googleProvider);
+    // const handleGoogleLogin = async () => {
+    //     try {
+    //         const result = await signInWithPopup(auth, googleProvider);
+    //         const user = result.user;
+    //         // Check if user exists in Firestore
+    //         const userRef = doc(db, "users", user.uid);
+    //         const docSnap = await getDoc(userRef);
 
-            // User info
-            console.log("✅ Google user:", result.user);
-        } catch (error) {
-            console.error("❌ Google login error:", error.message);
-        }
+    //         if (!docSnap.exists()) {
+    //             // If no user doc, create one
+    //             await setDoc(userRef, {
+    //                 uid: user.uid,
+    //                 displayName: user.displayName,
+    //                 email: user.email,
+    //                 photoURL: user.photoURL,
+    //                 online: true,
+    //                 createdAt: new Date()
+    //             });
+    //         }
 
-        navigate("/user");
-    };
+    //         console.log("✅ Google user saved:", user.displayName);
+    //     } catch (error) {
+    //         console.error("❌ Google login error:", error.message);
+    //     }
+
+    //     navigate("/");
+    // };
 
     const { errors, values, touched } = formik;
 
@@ -115,7 +139,7 @@ function Signup() {
                     Sign up
                 </button>
 
-                <button
+                {/* <button
                     onClick={handleGoogleLogin}
                     className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg mt-5 transition"
                 >
@@ -125,7 +149,7 @@ function Signup() {
                         className="w-6 h-6"
                     />
                     Continue with Google
-                </button>
+                </button> */}
 
                 <NavLink className="text-center text-blue-500 mt-5 underline" to={"/login"}>already have a account? login</NavLink>
             </form>
