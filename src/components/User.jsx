@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { CurrentUserContext } from '../context/CurrentUserContext'
+import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
 function UserCard({ click }) {
     const navigate = useNavigate();
-    const [user, setUser] = useState(null);
+    const { user } = useContext(CurrentUserContext);
     const { isClicked, setIsClicked } = click;
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-        });
-        return () => unsubscribe();
-    }, []);
 
     const handleLogout = async () => {
         try {
@@ -24,14 +18,6 @@ function UserCard({ click }) {
             console.error("❌ Logout error:", error.message);
         }
     };
-
-    if (!user) {
-        return (
-            <div className="p-5 text-center text-gray-500">
-                No user logged in
-            </div>
-        );
-    }
 
     return (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={() => setIsClicked(!isClicked)}>

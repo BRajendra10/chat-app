@@ -29,23 +29,29 @@ function Signup() {
                     values.email,
                     values.password
                 );
+
+                // generating random user image
+                const randomNum = Math.floor(Math.random() * 99) + 1;
+                const genders = ['men', 'women'];
+                const randomGender = genders[Math.floor(Math.random() * genders.length)];
+                const randomAvatar = `https://randomuser.me/api/portraits/${randomGender}/${randomNum}.jpg`;
                 // Update profile with username once
                 await updateProfile(userCredential.user, {
                     displayName: values.username,
+                    photoURL: randomAvatar
                 });
                 // Save to Firestore
                 await setDoc(doc(db, "users", userCredential.user.uid), {
                     uid: userCredential.user.uid,
                     displayName: values.username,
                     email: values.email,
-                    photoURL: userCredential.user.photoURL,
+                    photoURL: randomAvatar,
                     online: true,
                     createdAt: new Date()
                 });
                 // Reload to make sure local user object updates
                 await userCredential.user.reload();
 
-                console.log("✅ User signed up:", userCredential.user.displayName);
                 navigate("/");
             } catch (error) {
                 console.error("❌ Error signing up:", error.message);
@@ -54,34 +60,6 @@ function Signup() {
             formik.resetForm();
         },
     });
-
-    // const handleGoogleLogin = async () => {
-    //     try {
-    //         const result = await signInWithPopup(auth, googleProvider);
-    //         const user = result.user;
-    //         // Check if user exists in Firestore
-    //         const userRef = doc(db, "users", user.uid);
-    //         const docSnap = await getDoc(userRef);
-
-    //         if (!docSnap.exists()) {
-    //             // If no user doc, create one
-    //             await setDoc(userRef, {
-    //                 uid: user.uid,
-    //                 displayName: user.displayName,
-    //                 email: user.email,
-    //                 photoURL: user.photoURL,
-    //                 online: true,
-    //                 createdAt: new Date()
-    //             });
-    //         }
-
-    //         console.log("✅ Google user saved:", user.displayName);
-    //     } catch (error) {
-    //         console.error("❌ Google login error:", error.message);
-    //     }
-
-    //     navigate("/");
-    // };
 
     const { errors, values, touched } = formik;
 

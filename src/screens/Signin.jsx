@@ -12,14 +12,13 @@ const schema = object({
 
 function Signin() {
   const navigate = useNavigate();
-  
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: schema,
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, values.email, values.password);
-        console.log("User logged in:", userCredential.user);
+        console.log(userCredential.user);
         navigate("/");
       } catch (error) {
         setErrors({ general: error.message });

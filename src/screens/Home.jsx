@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../firebase";
@@ -7,25 +7,24 @@ import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
 import UserCard from "../components/User";
 
-
 function Home() {
     const navigate = useNavigate();
     const [isClicked, setIsClicked] = useState(false);
-    const [user, setUser] = useState(null);
+    const [users, setUsers] = useState(null);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             if (!currentUser) navigate("/login");
-            else setUser(currentUser);
+            else setUsers(currentUser);
         });
         return () => unsubscribe();
     }, [navigate]);
 
-    if (!user) return null;
+    if (!users) return null;
 
     return (
         <div className="w-full h-screen bg-white flex flex-col gap-2 p-2">
-            {isClicked && <UserCard click={{isClicked, setIsClicked}} />}
+            {isClicked && <UserCard click={{ isClicked, setIsClicked }} />}
             {/* 🔹 Top Bar */}
             <div className="w-full h-[4rem] border rounded-lg flex items-center justify-between px-6 shadow">
                 <h1 className="text-xl">Chats</h1>
@@ -40,8 +39,8 @@ function Home() {
                     <div className="flex items-center gap-3">
                         <img
                             src={
-                                user.photoURL ||
-                                `https://ui-avatars.com/api/?name=${user.displayName || "User"}&size=50&background=f97316&color=fff`
+                                users.photoURL ||
+                                `https://ui-avatars.com/api/?name=${users.displayName || "User"}&size=50&background=f97316&color=fff`
                             }
                             alt="avatar"
                             className="w-13 h-13 rounded-full border p-1 border-orange-300"
@@ -57,7 +56,8 @@ function Home() {
                 <Sidebar />
 
                 {/* Main Chat Area */}
-                <Chats />
+                 <Chats />
+                {/* {!false ? <div className="flex-1 flex flex-col justify-center items-center border rounded-lg bg-zinc-100"><span>Select chat to start chatting</span></div> : <Chats />} */}
             </div>
         </div>
     );
