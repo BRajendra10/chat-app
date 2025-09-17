@@ -1,12 +1,10 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import { useSelector } from "react-redux";
-import { CurrentUserContext } from '../context/CurrentUserContext'
 import Chat from "./Chat";
 import Search from "./Search";
 
 function Sidebar() {
-    const { user } = useContext(CurrentUserContext);
-    const { users } = useSelector((state) => state.users);
+    const { users, currentUser } = useSelector((state) => state.users);
 
     return (
         <div className="w-[22rem] bg-zinc-100 border rounded-lg flex flex-col">
@@ -18,7 +16,7 @@ function Sidebar() {
             {/* Chat list */}
             <div className="flex-1 overflow-y-auto p-2 space-y-2">
                 {users.map((el) => (
-                    el.uid !== user.uid && <Chat
+                    el.uid !== currentUser.uid && <Chat
                         key={el.id}
                         user={{
                             avatar: el.photoURL,

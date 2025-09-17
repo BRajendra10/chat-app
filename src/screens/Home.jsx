@@ -1,26 +1,15 @@
-import React, { useEffect, useState, } from "react";
-import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
 import UserCard from "../components/User";
 
 function Home() {
-    const navigate = useNavigate();
     const [isClicked, setIsClicked] = useState(false);
-    const [users, setUsers] = useState(null);
+    const { currentUser } = useSelector((state) => state.users);
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            if (!currentUser) navigate("/login");
-            else setUsers(currentUser);
-        });
-        return () => unsubscribe();
-    }, [navigate]);
-
-    if (!users) return null;
+    if (!currentUser) return null;
 
     return (
         <div className="w-full h-screen bg-white flex flex-col gap-2 p-2">
@@ -38,10 +27,7 @@ function Home() {
                     {/* Current User */}
                     <div className="flex items-center gap-3">
                         <img
-                            src={
-                                users.photoURL ||
-                                `https://ui-avatars.com/api/?name=${users.displayName || "User"}&size=50&background=f97316&color=fff`
-                            }
+                            src={currentUser?.photoURL}
                             alt="avatar"
                             className="w-13 h-13 rounded-full border p-1 border-orange-300"
                             onClick={() => setIsClicked(true)}
@@ -56,7 +42,7 @@ function Home() {
                 <Sidebar />
 
                 {/* Main Chat Area */}
-                 <Chats />
+                <Chats />
                 {/* {!false ? <div className="flex-1 flex flex-col justify-center items-center border rounded-lg bg-zinc-100"><span>Select chat to start chatting</span></div> : <Chats />} */}
             </div>
         </div>

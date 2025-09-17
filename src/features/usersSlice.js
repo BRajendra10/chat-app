@@ -13,6 +13,7 @@ export const fetchUsers = createAsyncThunk("fetchusers", async () => {
 })
 
 const initialState = {
+    currentUser: {},
     users: [],  
     status: "Pending...",
     error: null
@@ -21,7 +22,11 @@ const initialState = {
 const userSlice = createSlice({
     name: "users",
     initialState,
-    reducers: {},
+    reducers: {
+        setCurrentUser: (state, action) => {
+            state.currentUser = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchUsers.pending, (state) => {
@@ -39,3 +44,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer;
+export const { setCurrentUser } = userSlice.actions;

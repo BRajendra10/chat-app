@@ -1,8 +1,10 @@
 import React from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "../firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+// import { signInWithPopup } from "firebase/auth";
+// import { auth } from "../firebase";
 import { useNavigate, NavLink } from "react-router-dom";
 
 const schema = object({
@@ -28,15 +30,15 @@ function Signin() {
     },
   });
 
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log("✅ Google user:", result.user);
-      navigate("/");
-    } catch (error) {
-      console.error("❌ Google login error:", error.message);
-    }
-  };
+  // const handleGoogleLogin = async () => {
+  //   try {
+  //     const result = await signInWithPopup(auth, googleProvider);
+  //     console.log("✅ Google user:", result.user);
+  //     navigate("/");
+  //   } catch (error) {
+  //     console.error("❌ Google login error:", error.message);
+  //   }
+  // };
 
   return (
     <div className="w-[30rem] h-fit flex flex-col items-center bg-white shadow-xl rounded-xl p-5">
@@ -75,7 +77,7 @@ function Signin() {
           Sign In
         </button>
 
-        <button
+        {/* <button
           type="button"
           onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white p-3 rounded-lg mt-5 transition"
@@ -86,7 +88,7 @@ function Signin() {
             className="w-6 h-6"
           />
           Continue with Google
-        </button>
+        </button> */}
 
         <NavLink className="text-center text-blue-500 mt-5 underline" to={"/signup"}>
           Don't have an account

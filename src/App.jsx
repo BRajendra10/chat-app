@@ -1,14 +1,14 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect } from 'react'
 import { onAuthStateChanged } from "firebase/auth";
-import { CurrentUserContext } from './context/CurrentUserContext'
 import { auth } from "./firebase";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Navigation from "./routes/Navigation";
 import { fetchUsers } from './features/UsersSlice';
+import { setCurrentUser } from './features/UsersSlice';
 
 function App() {
   const dispatch = useDispatch();
-  const { handleUser } = useContext(CurrentUserContext)
+  const { currentUser } = useSelector((state) => state.users);
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -16,10 +16,10 @@ function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      handleUser(currentUser);
+      dispatch(setCurrentUser(currentUser))
     });
     return () => unsubscribe();
-  }, [handleUser]);
+  }, [dispatch, currentUser]);
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">

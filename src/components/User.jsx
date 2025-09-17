@@ -1,12 +1,12 @@
-import React, { useContext } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { CurrentUserContext } from '../context/CurrentUserContext'
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 
 function UserCard({ click }) {
     const navigate = useNavigate();
-    const { user } = useContext(CurrentUserContext);
+    const { currentUser } = useSelector((state) => state.users);
     const { isClicked, setIsClicked } = click;
 
     const handleLogout = async () => {
@@ -30,8 +30,8 @@ function UserCard({ click }) {
                     <div className="w-24 h-24 rounded-full p-1 bg-gradient-to-tr from-orange-500 to-sky-400">
                         <img
                             src={
-                                user.photoURL ||
-                                `https://ui-avatars.com/api/?name=${user.displayName || "User"
+                                currentUser.photoURL ||
+                                `https://ui-avatars.com/api/?name=${currentUser.displayName || "User"
                                 }&size=100&background=f97316&color=fff`
                             }
                             alt="user avatar"
@@ -40,9 +40,9 @@ function UserCard({ click }) {
                     </div>
 
                     <h2 className="mt-4 text-xl font-bold text-gray-800">
-                        {user.displayName || "No Name"}
+                        {currentUser.displayName || "No Name"}
                     </h2>
-                    <p className="text-gray-500 text-sm">{user.email}</p>
+                    <p className="text-gray-500 text-sm">{currentUser.email}</p>
 
                     {/* Divider */}
                     <div className="w-full h-px bg-gray-200 my-4"></div>
