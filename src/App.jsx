@@ -4,15 +4,18 @@ import { auth } from "./firebase";
 import { useSelector, useDispatch } from "react-redux";
 import Navigation from "./routes/Navigation";
 import { fetchUsers } from './features/UsersSlice';
+import { fetchUserChats } from './features/chatsSlice';
 import { setCurrentUser } from './features/UsersSlice';
 
 function App() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.users);
+  // const { chats } = useSelector((state) => state.chats)
 
   useEffect(() => {
     dispatch(fetchUsers());
-  }, [dispatch]);
+    dispatch(fetchUserChats(currentUser.uid));
+  }, [dispatch, currentUser]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {

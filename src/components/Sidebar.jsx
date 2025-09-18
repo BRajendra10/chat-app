@@ -30,25 +30,17 @@ function Sidebar() {
                 </div>
             </div>
 
-            {/* Chat list */}
+            {/* Users list */}
             <div className="flex-1 overflow-y-auto p-2 space-y-2">
                 {result.length > 0 ? result.map((el) => (
                     el.uid !== currentUser.uid && <Chat
-                        key={el.id}
-                        user={{
-                            avatar: el.photoURL,
-                            name: el.displayName,
-                            lastMessage: "Hey!",
-                        }}
+                        key={el.uid}
+                        user={el}
                     />
                 )) : users.map((el) => (
                     el.uid !== currentUser.uid && <Chat
-                        key={el.id}
-                        user={{
-                            avatar: el.photoURL,
-                            name: el.displayName,
-                            lastMessage: "Hey!",
-                        }}
+                        key={el.uid}
+                        user={el}
                     />
                 ))}
             </div>

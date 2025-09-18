@@ -1,6 +1,9 @@
 import React from 'react'
 
-function Chats() {
+function Chats({currentUser, selectedUser}) {
+
+    // console.log(currentUser, selectedUser);
+
     return (
         <div className="flex-1 flex flex-col justify-center items-center border rounded-lg bg-zinc-100">
             {/* Chat Header */}
