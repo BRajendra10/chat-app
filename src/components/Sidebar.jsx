@@ -20,7 +20,7 @@ function Sidebar() {
         <div className="w-[22rem] bg-zinc-100 border rounded-lg flex flex-col">
             {/* Search */}
             <div className="w-full h-[4.5rem] flex justify-center items-center bg-none p-2">
-                <div className="w-[20rem] h-[3.3rem] bg-white rounded-lg shadow-lg p-2 flex">
+                <div className="w-[20rem] h-[3.3rem] bg-white rounded-lg shadow-lg p-3 flex">
                     <div className="col-span-1 flex justify-start items-center">
                         <LuSearch className="text-xl" />
                     </div>

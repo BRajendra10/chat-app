@@ -13,7 +13,7 @@ function App() {
   
   useEffect(() => {
     dispatch(fetchUsers());
-    dispatch(fetchUserChats(currentUser.uid));
+    dispatch(fetchUserChats(currentUser?.uid));
   }, [dispatch, currentUser]);
 
   useEffect(() => {

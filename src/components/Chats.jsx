@@ -1,7 +1,10 @@
-import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useMemo, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { sendMessage } from "../features/chatsSlice";
 
 function Chats({ currentUser, selectedUser }) {
+  const dispatch = useDispatch();
+  const [msg, setMsg] = useState("");
   const { chats } = useSelector((state) => state.chats);
 
   // ✅ Only calculate chat once (memoized)
@@ -13,8 +16,21 @@ function Chats({ currentUser, selectedUser }) {
     );
   }, [chats, currentUser.uid, selectedUser.uid]);
 
+
+  const handleClick = () => {
+    dispatch(sendMessage({ chatId: chatData.id, senderId: currentUser.uid, message: msg }))
+  }
+
   // Until you really fetch messages from Firestore:
   const messages = chatData?.messages || [];
+
+  const sortedMessages = useMemo(() => {
+    return [...(chatData?.messages || [])].sort((a, b) => {
+      const aTime = a.createdAt?.toMillis?.() ?? new Date(a.createdAt).getTime();
+      const bTime = b.createdAt?.toMillis?.() ?? new Date(b.createdAt).getTime();
+      return aTime - bTime;
+    });
+  }, [chatData?.messages]);
 
   return (
     <div className="flex-1 flex flex-col border rounded-lg bg-zinc-100">
@@ -39,26 +55,24 @@ function Chats({ currentUser, selectedUser }) {
 
       {/* 🔹 Messages */}
       <div className="w-full flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.length === 0 && (
+        {sortedMessages.length === 0 && (
           <p className="text-gray-400 text-sm text-center">
             No messages yet…
           </p>
         )}
-        {messages.map((msg, index) => (
+        {sortedMessages.map((msg, index) => (
           <div
             key={index}
-            className={`flex ${
-              msg.senderId === currentUser.uid
-                ? "justify-end"
-                : "justify-start"
-            }`}
+            className={`flex ${msg.senderId === currentUser.uid
+              ? "justify-end"
+              : "justify-start"
+              }`}
           >
             <div
-              className={`px-4 py-2 rounded-2xl shadow max-w-xs ${
-                msg.senderId === currentUser.uid
-                  ? "bg-orange-500 text-white"
-                  : "bg-gray-200 text-gray-800"
-              }`}
+              className={`px-4 py-2 rounded-2xl shadow max-w-xs ${msg.senderId === currentUser.uid
+                ? "bg-orange-500 text-white"
+                : "bg-gray-200 text-gray-800"
+                }`}
             >
               {msg.message}
             </div>
@@ -72,8 +86,9 @@ function Chats({ currentUser, selectedUser }) {
           type="text"
           placeholder="Type a message..."
           className="flex-1 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg outline-none placeholder-gray-400"
+          onChange={(e) => setMsg(e.target.value)}
         />
-        <button className="ml-3 bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-full text-sm text-white">
+        <button className="ml-3 bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-full text-sm text-white" onClick={() => handleClick()}>
           Send message
         </button>
       </div>
