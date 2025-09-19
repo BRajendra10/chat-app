@@ -6,7 +6,8 @@ import Chat from "./Chat";
 function Sidebar() {
     const [query, setQuery] = useState("");
     const [result, setResult] = useState([]);
-    const { users, currentUser } = useSelector((state) => state.users);
+    const { users } = useSelector((state) => state.users);
+    const { currentUser } = useSelector((state) => state.users);
 
     useEffect(() => {
         if (query) {
@@ -48,4 +49,4 @@ function Sidebar() {
     )
 }
 
-export default Sidebar
+export default React.memo(Sidebar);

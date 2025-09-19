@@ -7,9 +7,8 @@ import UserCard from "../components/User";
 
 function Home() {
     const [isClicked, setIsClicked] = useState(false);
-    const { currentUser, selectedUser } = useSelector((state) => state.users);
-
-    console.log(selectedUser);
+    const currentUser = useSelector((state) => state.users.currentUser);
+    const selectedUser = useSelector((state) => state.users.selectedUser);
 
     if (!currentUser) return null;
 
@@ -44,10 +43,10 @@ function Home() {
                 <Sidebar />
 
                 {/* Main Chat Area */}
-                {!selectedUser.uid ? 
+                {!selectedUser.uid ?
                     <div className="flex-1 flex flex-col justify-center items-center border rounded-lg bg-zinc-100">
                         <span>Select chat to start chatting</span>
-                    </div> 
+                    </div>
                     : <Chats currentUser={currentUser} selectedUser={selectedUser} />}
             </div>
         </div>

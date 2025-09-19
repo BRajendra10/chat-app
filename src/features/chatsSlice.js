@@ -10,22 +10,39 @@ import { db } from "../firebase";
 */
 
 export const fetchUserChats = createAsyncThunk(
-    "chats/fetchUserChats",
-    async (currentUserUid) => {
-        const q = query(
-            collection(db, "chats"),
-            where("members", "array-contains", currentUserUid)
-        );
-        const snapshot = await getDocs(q);
-        // convert docs to array
-        const chats = snapshot.docs.map(docSnap => ({
-            id: docSnap.id,
-            ...docSnap.data()
+  "chats/fetchUserChats",
+  async (currentUserUid) => {
+    // Step 1: get chats
+    const q = query(
+      collection(db, "chats"),
+      where("members", "array-contains", currentUserUid)
+    );
+    const snapshot = await getDocs(q);
+
+    // Step 2: for each chat, also fetch messages
+    const chatsWithMessages = await Promise.all(
+      snapshot.docs.map(async (docSnap) => {
+        const chatData = {
+          id: docSnap.id,
+          ...docSnap.data()
+        };
+
+        // fetch messages subcollection
+        const messagesRef = collection(db, "chats", docSnap.id, "message");
+        const messageSnap = await getDocs(messagesRef);
+        const messages = messageSnap.docs.map((m) => ({
+          id: m.id,
+          ...m.data()
         }));
 
-        return chats; // will be passed to slice
-    }
+        return { ...chatData, messages };
+      })
+    );
+
+    return chatsWithMessages;
+  }
 );
+
 
 const initialState = {
     chats: [],

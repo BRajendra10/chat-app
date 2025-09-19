@@ -10,8 +10,7 @@ import { setCurrentUser } from './features/UsersSlice';
 function App() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.users);
-  // const { chats } = useSelector((state) => state.chats)
-
+  
   useEffect(() => {
     dispatch(fetchUsers());
     dispatch(fetchUserChats(currentUser.uid));
