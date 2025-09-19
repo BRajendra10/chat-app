@@ -4,6 +4,7 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
 import UserCard from "../components/User";
+import ChatContainer from "../components/ChatsContainer";
 
 function Home() {
     const [isClicked, setIsClicked] = useState(false);
@@ -47,7 +48,7 @@ function Home() {
                     <div className="flex-1 flex flex-col justify-center items-center border rounded-lg bg-zinc-100">
                         <span>Select chat to start chatting</span>
                     </div>
-                    : <Chats currentUser={currentUser} selectedUser={selectedUser} />}
+                    : <ChatContainer currentUser={currentUser} selectedUser={selectedUser} />}
             </div>
         </div>
     );

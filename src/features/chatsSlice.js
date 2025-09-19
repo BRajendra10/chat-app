@@ -7,7 +7,40 @@ import { db } from "../firebase";
 
     1. first understand flow of chats data
     2. get chats collection data from firestore(firebase)
+    3. create new chats
 */
+
+export const createChat = createAsyncThunk(
+  "chats/createChat",
+  async ({ currentUserUid, selectedUserUid }, { rejectWithValue }) => {
+    try {
+      // 1️⃣ Create new chat doc
+      const chatDoc = await addDoc(collection(db, "chats"), {
+        members: [currentUserUid, selectedUserUid],
+        groupName: null,
+        groupPhotoURL: null,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        lastMessage: null,
+      });
+
+      // 2️⃣ Return new chat data (no messages yet)
+      return {
+        id: chatDoc.id,
+        groupName: null,
+        groupPhotoURL: null,
+        members: [currentUserUid, selectedUserUid],
+        createdAt: new Date().toISOString(), // fallback
+        updatedAt: new Date().toISOString(),
+        lastMessage: null,
+        messages: [],
+      };
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 
 export const fetchUserChats = createAsyncThunk(
   "chats/fetchUserChats",
@@ -116,6 +149,18 @@ const chatsSlice = createSlice({
       .addCase(sendMessage.rejected, (state, action) => {
         state.error = action.payload;
       })
+      .addCase(createChat.pending, (state) => {
+        state.status = "Pending...";
+      })
+      .addCase(createChat.fulfilled, (state, action) => {
+        state.status = "Success";
+        // Add the new chat to state
+        state.chats.push(action.payload);
+      })
+      .addCase(createChat.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   }
 })
 
