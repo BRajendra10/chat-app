@@ -1,14 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addDoc, getDocs, collection, query, where, serverTimestamp, updateDoc, doc } from "firebase/firestore";
+import { addDoc, getDocs, deleteDoc, updateDoc, collection, query, where, serverTimestamp, doc } from "firebase/firestore";
 import { db } from "../firebase";
-
-/*
-    TODO: 
-
-    1. first understand flow of chats data
-    2. get chats collection data from firestore(firebase)
-    3. create new chats
-*/
 
 export const createChat = createAsyncThunk(
   "chats/createChat",
@@ -27,8 +19,8 @@ export const createChat = createAsyncThunk(
       // 2️⃣ Return new chat data (no messages yet)
       return {
         id: chatDoc.id,
-        groupName: null,
-        groupPhotoURL: null,
+        groupName: chatDoc.groupName,
+        groupPhotoURL: chatDoc.groupPhotoURL,
         members: [currentUserUid, selectedUserUid],
         createdAt: new Date().toISOString(), // fallback
         updatedAt: new Date().toISOString(),
@@ -105,6 +97,39 @@ export const sendMessage = createAsyncThunk(
   }
 );
 
+export const deleteMessage = createAsyncThunk(
+  "chats/deleteMessage",
+  async ({ chatId, messageId }, { rejectWithValue }) => {
+    try {
+      const msgRef = doc(db, "chats", chatId, "message", messageId);
+
+      await deleteDoc(msgRef);
+
+      return { chatId, messageId };
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+export const updateMessage = createAsyncThunk(
+  "chats/updateMessage",
+  async ({ chatId, messageId, newText }, { rejectWithValue }) => {
+    try {
+      const msgRef = doc(db, "chats", chatId, "message", messageId);
+
+      await updateDoc(msgRef, {
+        message: newText,
+        editedAt: new Date()
+      });
+
+      return { chatId, messageId, newText };
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
 const initialState = {
   chats: [],
   status: "Pending...",
@@ -116,6 +141,7 @@ const chatsSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // fetch chats data
     builder
       .addCase(fetchUserChats.pending, (state) => {
         state.status = "Pending...";
@@ -128,6 +154,9 @@ const chatsSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
+
+    // send message
+    builder
       .addCase(sendMessage.pending, (state) => {
         state.status = "Pending..."
       })
@@ -149,6 +178,9 @@ const chatsSlice = createSlice({
       .addCase(sendMessage.rejected, (state, action) => {
         state.error = action.payload;
       })
+
+    // create new chat(start new chat)
+    builder
       .addCase(createChat.pending, (state) => {
         state.status = "Pending...";
       })
@@ -159,6 +191,39 @@ const chatsSlice = createSlice({
       })
       .addCase(createChat.rejected, (state, action) => {
         state.status = "failed";
+        state.error = action.payload;
+      });
+
+    builder
+      // ✅ Update message
+      .addCase(updateMessage.fulfilled, (state, action) => {
+        const { chatId, messageId, newText } = action.payload;
+        const chatIndex = state.chats.findIndex((c) => c.id === chatId);
+        if (chatIndex !== -1) {
+          const msgIndex = state.chats[chatIndex].messages.findIndex(
+            (m) => m.id === messageId
+          );
+          if (msgIndex !== -1) {
+            state.chats[chatIndex].messages[msgIndex].message = newText;
+            state.chats[chatIndex].messages[msgIndex].editedAt = new Date();
+          }
+        }
+      })
+      .addCase(updateMessage.rejected, (state, action) => {
+        state.error = action.payload;
+      })
+
+    builder
+      .addCase(deleteMessage.fulfilled, (state, action) => {
+        const { chatId, messageId } = action.payload;
+        const chatIndex = state.chats.findIndex((c) => c.id === chatId);
+        if (chatIndex !== -1) {
+          state.chats[chatIndex].messages = state.chats[chatIndex].messages.filter(
+            (m) => m.id !== messageId
+          );
+        }
+      })
+      .addCase(deleteMessage.rejected, (state, action) => {
         state.error = action.payload;
       });
   }

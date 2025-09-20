@@ -1,31 +1,69 @@
 import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
-import { createChat, sendMessage } from "../features/chatsSlice";
+import { createChat, deleteMessage, sendMessage, updateMessage } from "../features/chatsSlice";
+import { RiPencilFill } from "react-icons/ri";
+import { MdDelete } from "react-icons/md";
+
 
 function Chats({ currentUser, selectedUser, chatData }) {
   const dispatch = useDispatch();
-  const [msg, setMsg] = useState("");
+  const [msg, setMsg] = useState({});
+  const [text, setText] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleClick = () => {
     if (chatData) {
       // ✅ Existing chat → just send message
-      dispatch(sendMessage({ chatId: chatData.id, senderId: currentUser.uid, message: msg }));
+      if (isUpdating) {
+        dispatch(updateMessage({
+          chatId: chatData.id,
+          messageId: msg.id,
+          newText: text
+        }));
+        setIsUpdating(false);
+        setText("");
+      } else {
+        dispatch(sendMessage({ chatId: chatData.id, senderId: currentUser.uid, message: text }));
+        setText("")
+      }
     } else {
       // ❌ No chat yet → create new chat, then send first message
-      dispatch(createChat({currentUserUid: currentUser.uid, selectedUserUid: selectedUser.uid,}))
+      dispatch(createChat({ currentUserUid: currentUser.uid, selectedUserUid: selectedUser.uid, }))
         .unwrap()
         .then((newChat) => {
           dispatch(
             sendMessage({
               chatId: newChat.id,
               senderId: currentUser.uid,
-              message: msg,
+              message: text,
             })
           );
         });
     }
-    setMsg("");
+    setText("");
   };
+
+  const deleteMsg = (msg) => {
+    dispatch(deleteMessage({
+      chatId: chatData.id,
+      messageId: msg.id
+    }));
+  }
+
+  const handleMsg = (msg) => {
+    if (!isUpdating) {
+      setText(msg.message);
+      setMsg(msg);
+      setIsUpdating(true);
+    } else {
+      dispatch(updateMessage({
+        chatId: chatData.id,
+        messageId: msg.id,
+        newText: "Updated text here"
+      }));
+      setIsUpdating(false);
+    }
+  }
 
   const sortedMessages = useMemo(() => {
     return [...(chatData?.messages || [])].sort((a, b) => {
@@ -60,15 +98,17 @@ function Chats({ currentUser, selectedUser, chatData }) {
           sortedMessages.map((msg, index) => (
             <div
               key={index}
-              className={`flex ${msg.senderId === currentUser.uid ? "justify-end" : "justify-start"}`}
+              className={`flex flex-col ${msg.senderId === currentUser.uid ? "items-end" : "items-start"}`}
             >
-              <div
-                className={`px-4 py-2 rounded-2xl shadow max-w-xs ${msg.senderId === currentUser.uid
-                    ? "bg-orange-500 text-white"
-                    : "bg-gray-200 text-gray-800"
-                  }`}
-              >
-                {msg.message}
+              <div className="group relative">
+                <span className={`px-4 py-2 rounded-2xl shadow max-w-xs ${msg.senderId === currentUser.uid
+                  ? "bg-orange-500 text-white"
+                  : "bg-gray-200 text-gray-800"
+                  }`}>{msg.message}</span>
+                <div className="hidden absolute translate-y-1/2 top-1/2 max-w-xs group-hover:flex justify-start items-center">
+                  <button className="p-2 text-lg" onClick={() => handleMsg(msg)}><RiPencilFill /></button>
+                  <button className="p-2 text-lg" onClick={() => deleteMsg(msg)}><MdDelete /></button>
+                </div>
               </div>
             </div>
           ))
@@ -81,8 +121,8 @@ function Chats({ currentUser, selectedUser, chatData }) {
           type="text"
           placeholder="Type a message..."
           className="flex-1 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg outline-none placeholder-gray-400"
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
         />
         <button
           className="ml-3 bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-full text-sm text-white"
@@ -94,6 +134,5 @@ function Chats({ currentUser, selectedUser, chatData }) {
     </div>
   );
 }
-
 
 export default React.memo(Chats);
