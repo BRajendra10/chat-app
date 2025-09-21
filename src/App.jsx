@@ -1,11 +1,15 @@
 import React, { useEffect } from 'react'
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
 import { useSelector, useDispatch } from "react-redux";
-import Navigation from "./routes/Navigation";
+
 import { fetchUsers } from './features/UsersSlice';
 import { fetchUserChats } from './features/chatsSlice';
 import { setCurrentUser } from './features/UsersSlice';
+
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+
+import Navigation from "./routes/Navigation";
+import './App.css'
 
 function App() {
   const dispatch = useDispatch();

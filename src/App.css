@@ -1,0 +1,25 @@
+/* Simple White-Gray Scrollbar */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+  border-radius: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: #f0f0f0; /* Light gray track */
+  border-radius: 9999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #c0c0c0; /* Gray thumb */
+  border-radius: 9999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0; /* Darker gray on hover */
+}
+
+/* Firefox support */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c0c0c0 #f0f0f0;
+}

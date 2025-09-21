@@ -93,7 +93,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
       </div>
 
       {/* Messages */}
-      <div className="w-full flex-1 overflow-y-auto p-6 space-y-4">
+      <div className="w-full flex-1 overflow-y-auto p-6 space-y-4 custom-scroll">
         {sortedMessages.length === 0 ? (
           <p className="text-gray-400 text-sm text-center">No messages yet…</p>
         ) : (
