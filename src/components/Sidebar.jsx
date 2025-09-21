@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from "react-redux";
+
 import { LuSearch } from "react-icons/lu";
+import { GrFormClose } from "react-icons/gr";
+
 import Chat from "./Chat";
 
 function Sidebar() {
@@ -22,7 +25,10 @@ function Sidebar() {
             <div className="w-full h-[4.5rem] flex justify-center items-center bg-none p-2">
                 <div className="w-[20rem] h-[3.3rem] bg-white rounded-lg shadow-lg p-3 flex">
                     <div className="col-span-1 flex justify-start items-center">
-                        <LuSearch className="text-xl" />
+                        {query ? <GrFormClose className="text-xl" onClick={() => {
+                            setQuery("");
+                            setResult([]);
+                        }} /> : <LuSearch className="text-lg" />}
                     </div>
                     <input className="col-span-11 w-full outline-none rounded-sm py-2 px-3"
                         value={query}

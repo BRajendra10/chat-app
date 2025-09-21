@@ -1,11 +1,12 @@
 import React from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
+import { useNavigate, NavLink } from "react-router-dom";
+
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 // import { signInWithPopup } from "firebase/auth";
 // import { auth } from "../firebase";
-import { useNavigate, NavLink } from "react-router-dom";
 
 const schema = object({
   email: string().required("Email is required").email("Invalid email"),

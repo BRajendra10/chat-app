@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+
 import { IoMdNotificationsOutline } from "react-icons/io";
+
 import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
 import UserCard from "../components/User";
 import ChatContainer from "../components/ChatsContainer";
+
 
 function Home() {
     const [isClicked, setIsClicked] = useState(false);

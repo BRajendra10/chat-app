@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
+
 import Chats from "./Chats";
 
 export default function ChatContainer({ currentUser, selectedUser }) {
