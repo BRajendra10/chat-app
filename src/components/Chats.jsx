@@ -81,7 +81,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
     <div className="flex-1 flex flex-col border rounded-lg bg-zinc-100">
       {/* Chat Header */}
       <div className="w-full h-[4.5rem] flex items-center gap-3 px-5 border rounded-t-lg border-gray-200 bg-white shadow-sm">
-        <button onClick={() => navigate("/")}>
+        <button className="block md:hidden" onClick={() => navigate("/")}>
           <IoArrowBackSharp className="text-lg" />
         </button>
         <img src={selectedUser?.photoURL} alt="avatar" className="w-10 h-10 rounded-full object-cover bg-gray-200" />
@@ -91,14 +91,14 @@ function Chats({ currentUser, selectedUser, chatData }) {
           </span>
           {chatData?.lastMessage && (
             <span className="text-xs text-gray-400">
-              Last message: {chatData.lastMessage.text}
+              Last msg: {chatData.lastMessage.message}
             </span>
           )}
         </div>
       </div>
 
       {/* Messages */}
-      <div className="w-full flex-1 overflow-y-auto p-6 space-y-4 custom-scroll">
+      <div className="w-full flex-1 overflow-y-auto p-6 space-y-5 custom-scroll">
         {sortedMessages.length === 0 ? (
           <p className="text-gray-400 text-sm text-center">No messages yet…</p>
         ) : (
