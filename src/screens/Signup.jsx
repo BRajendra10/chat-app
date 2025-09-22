@@ -44,6 +44,7 @@ function Signup() {
 
                 // Save to Firestore
                 await setDoc(doc(db, "users", userCredential.user.uid), {
+                    type: "direct",
                     uid: userCredential.user.uid,
                     displayName: values.username,
                     email: values.email,
