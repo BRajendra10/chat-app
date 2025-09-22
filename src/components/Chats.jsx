@@ -1,13 +1,15 @@
 import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import { createChat, deleteMessage, sendMessage, updateMessage } from "../features/chatsSlice";
 
 import { RiPencilFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
-
+import { IoPaperPlane, IoArrowBackSharp } from "react-icons/io5";
 
 function Chats({ currentUser, selectedUser, chatData }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [msg, setMsg] = useState({});
   const [text, setText] = useState("");
@@ -79,6 +81,9 @@ function Chats({ currentUser, selectedUser, chatData }) {
     <div className="flex-1 flex flex-col border rounded-lg bg-zinc-100">
       {/* Chat Header */}
       <div className="w-full h-[4.5rem] flex items-center gap-3 px-5 border rounded-t-lg border-gray-200 bg-white shadow-sm">
+        <button onClick={() => navigate("/")}>
+          <IoArrowBackSharp className="text-lg" />
+        </button>
         <img src={selectedUser?.photoURL} alt="avatar" className="w-10 h-10 rounded-full object-cover bg-gray-200" />
         <div className="flex flex-col">
           <span className="text-lg font-medium text-gray-700">
@@ -127,10 +132,11 @@ function Chats({ currentUser, selectedUser, chatData }) {
           onChange={(e) => setText(e.target.value)}
         />
         <button
-          className="ml-3 bg-orange-500 hover:bg-orange-600 px-5 py-2 rounded-full text-sm text-white"
+          className="ml-3 bg-orange-500 hover:bg-orange-600 p-3 md:px-5 md:py-2 rounded-full text-sm text-white"
           onClick={handleClick}
         >
-          Send message
+          <span className="hidden md:block">Send message</span>
+          <IoPaperPlane className="block md:hidden text-lg" />
         </button>
       </div>
     </div>

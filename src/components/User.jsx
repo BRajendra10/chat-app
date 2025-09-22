@@ -1,13 +1,20 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { selectUser } from '../features/usersSlice';
+import { useNavigate } from "react-router-dom";
 
 function User({ user }) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { displayName, email, photoURL } = user;
 
+  const HandleClick = (user) => {
+    dispatch(selectUser(user));
+    navigate("/chats");
+  }
+
   return (
-    <div className="flex items-center gap-4 p-4 bg-white hover:bg-gray-100 rounded-xl shadow-lg cursor-pointer transition" onClick={() => dispatch(selectUser(user))}>
+    <div className="flex items-center gap-4 p-4 bg-white hover:bg-gray-100 rounded-xl shadow-lg cursor-pointer transition" onClick={() => HandleClick(user)}>
       {/* User Avatar */}
       <img
         src={photoURL}

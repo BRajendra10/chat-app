@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Outlet } from "react-router-dom";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 
@@ -22,7 +23,7 @@ function Home() {
             <div className="w-full h-[4rem] border rounded-lg flex items-center justify-between px-6 shadow">
                 <h1 className="text-xl">Chats</h1>
 
-                {/* Notifications + Logout */}
+                {/* Notifications + Logout */}  
                 <div className="flex items-center gap-4">
                     <button className="relative">
                         <IoMdNotificationsOutline className="text-2xl" />
@@ -41,7 +42,7 @@ function Home() {
             </div>
 
             {/* 🔹 Main Content */}
-            <div className="flex flex-1 gap-2 overflow-hidden">
+            <div className="hidden md:flex flex-1 gap-2 overflow-hidden">
                 {/* Sidebar */}
                 <Sidebar />
 
@@ -52,8 +53,13 @@ function Home() {
                     </div>
                     : <ChatContainer currentUser={currentUser} selectedUser={selectedUser} />}
             </div>
+
+            <div className="flex md:hidden flex-1 gap-2 overflow-hidden">
+                {/* Sidebar */}
+                <Outlet />
+            </div>
         </div>
     );
 }
 
-export default Home;
+export default React.memo(Home);
