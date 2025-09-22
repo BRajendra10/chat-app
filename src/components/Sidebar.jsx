@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { LuSearch } from "react-icons/lu";
 import { GrFormClose } from "react-icons/gr";
 
-import Chat from "./Chat";
+import User from './User';
 
 function Sidebar() {
     const [query, setQuery] = useState("");
@@ -40,12 +40,12 @@ function Sidebar() {
             {/* Users list */}
             <div className="flex-1 overflow-y-auto p-2 space-y-2 custom-scroll">
                 {result.length > 0 ? result.map((el) => (
-                    el.uid !== currentUser.uid && <Chat
+                    el.uid !== currentUser.uid && <User
                         key={el.uid}
                         user={el}
                     />
                 )) : users.map((el) => (
-                    el.uid !== currentUser.uid && <Chat
+                    el.uid !== currentUser.uid && <User
                         key={el.uid}
                         user={el}
                     />

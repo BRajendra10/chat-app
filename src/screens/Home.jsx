@@ -5,9 +5,8 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 
 import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
-import UserCard from "../components/User";
+import Profile from "../components/Profile";
 import ChatContainer from "../components/ChatsContainer";
-
 
 function Home() {
     const [isClicked, setIsClicked] = useState(false);
@@ -18,7 +17,7 @@ function Home() {
 
     return (
         <div className="w-full h-screen bg-white flex flex-col gap-2 p-2">
-            {isClicked && <UserCard click={{ isClicked, setIsClicked }} />}
+            {isClicked && <Profile click={{ isClicked, setIsClicked }} />}
             {/* 🔹 Top Bar */}
             <div className="w-full h-[4rem] border rounded-lg flex items-center justify-between px-6 shadow">
                 <h1 className="text-xl">Chats</h1>
