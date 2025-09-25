@@ -2,10 +2,13 @@ import React from "react";
 import { useFormik } from "formik";
 import { object, string } from "yup";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-import { doc, setDoc } from "firebase/firestore";
+import { addUser } from "../features/usersSlice";
+
+// import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth } from "../firebase";
 
 const schema = object({
     username: string().required("Username is required"),
@@ -15,6 +18,7 @@ const schema = object({
 });
 
 function Signup() {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
@@ -32,28 +36,22 @@ function Signup() {
                     values.password
                 );
 
-                // Generate random avatar based on selected gender
                 const randomNum = Math.floor(Math.random() * 99) + 1;
                 const randomAvatar = `https://randomuser.me/api/portraits/${values.avatarGender}/${randomNum}.jpg`;
 
-                // Update profile with username and avatar
                 await updateProfile(userCredential.user, {
                     displayName: values.username,
                     photoURL: randomAvatar
                 });
 
-                // Save to Firestore
-                await setDoc(doc(db, "users", userCredential.user.uid), {
-                    type: "direct",
+                // ✅ Dispatch Redux thunk instead of calling setDoc here
+                dispatch(addUser({
                     uid: userCredential.user.uid,
                     displayName: values.username,
                     email: values.email,
-                    photoURL: randomAvatar,
-                    online: true,
-                    createdAt: new Date()
-                });
+                    photoURL: randomAvatar
+                }));
 
-                await userCredential.user.reload();
                 navigate("/");
             } catch (error) {
                 console.error("❌ Error signing up:", error.message);

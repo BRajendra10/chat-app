@@ -3,14 +3,17 @@ import { useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { FiUsers } from "react-icons/fi";
 
 import Sidebar from "../components/Sidebar";
 import Chats from "../components/Chats";
 import Profile from "../components/Profile";
 import ChatContainer from "../components/ChatsContainer";
+import GroupChatForm from "./GroupChatForm";
 
 function Home() {
     const [isClicked, setIsClicked] = useState(false);
+    const [clicked, setClicked] = useState(false);
     const currentUser = useSelector((state) => state.users.currentUser);
     const selectedUser = useSelector((state) => state.users.selectedUser);
 
@@ -19,15 +22,19 @@ function Home() {
     return (
         <div className="w-full h-screen bg-white flex flex-col gap-2 p-2">
             {isClicked && <Profile click={{ isClicked, setIsClicked }} />}
+            {clicked && <GroupChatForm click={{clicked, setClicked}} />}
             {/* 🔹 Top Bar */}
             <div className="w-full h-[4rem] border rounded-lg flex items-center justify-between px-6 shadow">
                 <h1 className="text-xl">Chats</h1>
 
                 {/* Notifications + Logout */}  
                 <div className="flex items-center gap-4">
+                    <button className="relative" onClick={() => setClicked(true)}>
+                        <FiUsers className="text-xl" />
+                    </button>
                     <button className="relative">
-                        <IoMdNotificationsOutline className="text-2xl" />
-                        <span className="absolute top-0 right-0 w-2 h-2 bg-sky-400 rounded-full"></span>
+                        <IoMdNotificationsOutline className="text-xl" />
+                        <span className="absolute top-0 right-0 w-2 h-2 bg-orange-400 rounded-full"></span>
                     </button>
                     {/* Current User */}
                     <div className="flex items-center gap-3">

@@ -19,5 +19,5 @@ const app = initializeApp(firebaseConfig);
 
 // Export what you need
 export const auth = getAuth(app);       // For login/logout
-export const googleProvider = new GoogleAuthProvider();
+// export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);    // For chat messages

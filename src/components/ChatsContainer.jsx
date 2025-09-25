@@ -8,12 +8,21 @@ export default function ChatContainer({ currentUser, selectedUser }) {
 
   // ✅ Find the chat between these two users (if it exists)
   const chatData = useMemo(() => {
-    return chats.find(
+    // First look for private chat
+    const privateChat = chats.find(
       (chat) =>
         chat.members.includes(currentUser.uid) &&
-        chat.members.includes(selectedUser.uid)
+        chat.members.includes(selectedUser.uid) &&
+        chat.type === "direct"
     );
-  }, [chats, currentUser.uid, selectedUser.uid]);
+
+    // If not found, look for group chat by groupName
+    const groupChat = chats.find(
+      (chat) => chat.groupName?.includes(selectedUser.displayName) && chat.type === "group"
+    );
+
+    return privateChat || groupChat || null; // always return chat object or null
+  }, [chats, currentUser.uid, selectedUser.uid, selectedUser.displayName]);
 
   // ✅ Decide what to render:
   if (!selectedUser?.uid) {

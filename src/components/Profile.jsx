@@ -58,7 +58,7 @@ function Profile({ click }) {
       >
         <button
           className="absolute top-3 right-3 hover:text-gray-600"
-          onClick={() => setIsClicked(!isClicked)}
+          onClick={() => setIsClicked(false)}
         >
           ✖
         </button>

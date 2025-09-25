@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getDocs, collection } from "firebase/firestore";
+import { getDocs, setDoc, collection, doc } from "firebase/firestore";
 import { db } from "../firebase";
 
 export const fetchUsers = createAsyncThunk("fetchusers", async () => {
@@ -11,6 +11,27 @@ export const fetchUsers = createAsyncThunk("fetchusers", async () => {
 
     return usersList;
 })
+
+export const addUser = createAsyncThunk(
+    "users/addUser",
+    async ({ uid, displayName, email, photoURL }, { rejectWithValue }) => {
+        try {
+            await setDoc(doc(db, "users", uid), {
+                uid,
+                displayName,
+                email,
+                photoURL,
+                online: true,
+                createdAt: new Date()
+            });
+
+            // return the user object so Redux can update state immediately
+            return { uid, displayName, email, photoURL, online: true };
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
 
 const initialState = {
     users: [],
@@ -42,6 +63,19 @@ const userSlice = createSlice({
                 state.users = action.payload;
             })
             .addCase(fetchUsers.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload;
+            });
+
+        builder
+            .addCase(addUser.pending, (state) => {
+                state.status = "Adding user...";
+            })
+            .addCase(addUser.fulfilled, (state, action) => {
+                state.status = "User added";
+                state.users.push(action.payload);
+            })
+            .addCase(addUser.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload;
             });

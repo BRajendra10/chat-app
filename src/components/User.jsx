@@ -14,7 +14,7 @@ function User({ user }) {
   }
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white hover:bg-gray-100 rounded-xl shadow-lg cursor-pointer transition" onClick={() => HandleClick(user)}>
+    <div className="flex items-center gap-4 p-4 bg-white hover:bg-gray-100 rounded-xl shadow-lg cursor-pointer transition" onClick={() => HandleClick(user)} key={user.uid}>
       {/* User Avatar */}
       <img
         src={photoURL}

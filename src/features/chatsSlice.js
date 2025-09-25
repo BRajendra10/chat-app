@@ -4,13 +4,17 @@ import { db } from "../firebase";
 
 export const createChat = createAsyncThunk(
   "chats/createChat",
-  async ({ currentUserUid, selectedUserUid }, { rejectWithValue }) => {
+  async (
+    { members, type, groupName = null, groupPhotoURL = null },
+    { rejectWithValue }
+  ) => {
     try {
       // 1️⃣ Create new chat doc
       const chatDoc = await addDoc(collection(db, "chats"), {
-        members: [currentUserUid, selectedUserUid],
-        groupName: null,
-        groupPhotoURL: null,
+        type,
+        members, // now array of user UIDs (including current user)
+        groupName, // null if direct chat
+        groupPhotoURL, // null if no group image
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
         lastMessage: null,
@@ -19,10 +23,10 @@ export const createChat = createAsyncThunk(
       // 2️⃣ Return new chat data (no messages yet)
       return {
         id: chatDoc.id,
-        groupName: chatDoc.groupName,
-        groupPhotoURL: chatDoc.groupPhotoURL,
-        members: [currentUserUid, selectedUserUid],
-        createdAt: new Date().toISOString(), // fallback
+        groupName,
+        groupPhotoURL,
+        members,
+        createdAt: new Date().toISOString(), // fallback for UI
         updatedAt: new Date().toISOString(),
         lastMessage: null,
         messages: [],
