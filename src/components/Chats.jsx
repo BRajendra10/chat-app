@@ -14,11 +14,9 @@ function Chats({ currentUser, selectedUser, chatData }) {
   const [msg, setMsg] = useState({});
   const [text, setText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
-  
+
   const handleClick = () => {
     if (chatData) {
-      console.log("Chat data is avilable");
-      // ✅ Existing chat → just send message
       if (isUpdating) {
         dispatch(updateMessage({
           chatId: chatData.id,
@@ -32,8 +30,6 @@ function Chats({ currentUser, selectedUser, chatData }) {
         setText("")
       }
     } else {
-      console.log("Chat data is not avilable");
-      // ❌ No chat yet → create new chat, then send first message
       dispatch(createChat({
         type: "direct",
         members: [currentUser.uid, selectedUser.uid],
