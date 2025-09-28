@@ -20,6 +20,7 @@ function Navigation() {
             </Route>
             <Route path="/login" element={<Signin />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="*" element={<>Page not found</>} />
         </Routes>
     )
 }

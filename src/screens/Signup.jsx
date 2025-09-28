@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 
 import { addUser } from "../features/usersSlice";
 
-// import { doc, setDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 

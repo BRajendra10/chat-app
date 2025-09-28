@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { FiUsers } from "react-icons/fi";
@@ -12,22 +12,25 @@ import ChatContainer from "../components/ChatsContainer";
 import GroupChatForm from "./GroupChatForm";
 
 function Home() {
+    const navigate = useNavigate();
     const [isClicked, setIsClicked] = useState(false);
     const [clicked, setClicked] = useState(false);
     const currentUser = useSelector((state) => state.users.currentUser);
     const selectedUser = useSelector((state) => state.users.selectedUser);
 
-    if (!currentUser) return null;
-
+    if (!currentUser) {
+       navigate("/login");
+    }
+    
     return (
         <div className="w-full h-screen bg-white flex flex-col gap-2 p-2">
             {isClicked && <Profile click={{ isClicked, setIsClicked }} />}
-            {clicked && <GroupChatForm click={{clicked, setClicked}} />}
+            {clicked && <GroupChatForm click={{ clicked, setClicked }} />}
             {/* 🔹 Top Bar */}
             <div className="w-full h-[4rem] border rounded-lg flex items-center justify-between px-6 shadow">
                 <h1 className="text-xl">Chats</h1>
 
-                {/* Notifications + Logout */}  
+                {/* Notifications + Logout */}
                 <div className="flex items-center gap-4">
                     <button className="relative" onClick={() => setClicked(true)}>
                         <FiUsers className="text-xl" />
