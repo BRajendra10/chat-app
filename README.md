@@ -10,7 +10,7 @@
 
 ## ✨ Features  
 
-- 🔐 **Authentication** – Secure sign up & log in with Firebase Auth  
+- 🔐 **Authentication** – Secure sign up & log in with Firebase Auth
 - 🧑‍🤝‍🧑 **Add Users** – Add new contacts during signup  
 - 💬 **Private Chat** – One-to-one messaging  
 - 👥 **Group Chat** – Create groups with unlimited members  
@@ -24,6 +24,10 @@
 
 - **Frontend:** React, Tailwind CSS, Redux Toolkit, React Icons  
 - **Backend:** Firebase Authentication, Firebase Firestore  
+
+---
+
+📽️ Demo / Project Files → [Click Here](https://drive.google.com/drive/folders/1Gxhwv7rdTfNH4ZYWFXj2m6svydSFj3rt?usp=sharing)
 
 ---
 
