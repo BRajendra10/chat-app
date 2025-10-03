@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { createChat, deleteMessage, sendMessage, updateMessage } from "../features/chatsSlice";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "../firebase";
 
 import { RiPencilFill } from "react-icons/ri";
@@ -86,13 +86,11 @@ function Chats({ currentUser, selectedUser, chatData }) {
     const q = query(collection(db, "chats", chatData.id, "message"));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      console.log(snapshot);
       const msgs = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
       setMessages(msgs);
-      console.log(msgs);
     });
 
     return () => unsubscribe(); // cleanup listener
@@ -129,14 +127,15 @@ function Chats({ currentUser, selectedUser, chatData }) {
               className={`flex flex-col ${msg.senderId === currentUser.uid ? "items-end" : "items-start"}`}
             >
               <div className="group relative">
+                <span></span>
                 <span className={`px-4 py-2 rounded-2xl shadow max-w-xs ${msg.senderId === currentUser.uid
                   ? "bg-orange-500 text-white"
                   : "bg-gray-200 text-gray-800"
                   }`}>{msg.message}</span>
-                <div className="hidden absolute translate-y-1/2 top-1/2 max-w-xs group-hover:flex justify-start items-center">
+                {msg.senderId === currentUser.uid && <div className="hidden absolute translate-y-1/2 top-1/2 max-w-xs group-hover:flex justify-start items-center">
                   <button className="p-2 text-lg" onClick={() => handleMsg(msg)}><RiPencilFill /></button>
                   <button className="p-2 text-lg" onClick={() => deleteMsg(msg)}><MdDelete /></button>
-                </div>
+                </div>}
               </div>
             </div>
           ))
