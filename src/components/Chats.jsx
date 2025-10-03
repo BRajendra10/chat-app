@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import { createChat, deleteMessage, sendMessage, updateMessage } from "../features/chatsSlice";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
+import { db } from "../firebase";
 
 import { RiPencilFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
@@ -14,6 +16,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
   const [msg, setMsg] = useState({});
   const [text, setText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [messages, setMessages] = useState([...[], chatData?.messages]);
 
   const handleClick = () => {
     if (chatData) {
@@ -24,10 +27,8 @@ function Chats({ currentUser, selectedUser, chatData }) {
           newText: text
         }));
         setIsUpdating(false);
-        setText("");
       } else {
         dispatch(sendMessage({ chatId: chatData.id, senderId: currentUser.uid, message: text }));
-        setText("")
       }
     } else {
       dispatch(createChat({
@@ -64,19 +65,38 @@ function Chats({ currentUser, selectedUser, chatData }) {
       dispatch(updateMessage({
         chatId: chatData.id,
         messageId: msg.id,
-        newText: "Updated text here"
+        newText: text
       }));
+      setText("");
       setIsUpdating(false);
     }
   }
 
   const sortedMessages = useMemo(() => {
-    return [...(chatData?.messages || [])].sort((a, b) => {
+    return [...(messages || [])].sort((a, b) => {
       const aTime = a.createdAt?.toMillis?.() ?? new Date(a.createdAt).getTime();
       const bTime = b.createdAt?.toMillis?.() ?? new Date(b.createdAt).getTime();
       return aTime - bTime;
     });
-  }, [chatData?.messages]);
+  }, [messages]);
+
+  useEffect(() => {
+    if (!chatData?.id) return
+
+    const q = query(collection(db, "chats", chatData.id, "message"));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      console.log(snapshot);
+      const msgs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setMessages(msgs);
+      console.log(msgs);
+    });
+
+    return () => unsubscribe(); // cleanup listener
+  }, [chatData?.id]);
 
   return (
     <div className="flex-1 flex flex-col border rounded-lg bg-zinc-100">
