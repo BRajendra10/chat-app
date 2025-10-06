@@ -16,7 +16,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
   const [msg, setMsg] = useState({});
   const [text, setText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
-  const [messages, setMessages] = useState([...[], chatData?.messages]);
+  const [messages, setMessages] = useState(chatData?.messages || []);
 
   const handleClick = () => {
     if (chatData) {
