@@ -33,10 +33,10 @@ function Profile({ click }) {
     try {
       // Update Firebase Auth profile
       await updateProfile(auth.currentUser, { photoURL: newAvatar });
-
+      
       // Update Firestore document
       await updateDoc(doc(db, "users", currentUser.uid), { photoURL: newAvatar });
-
+      
       // Update local state
       setAvatarURL(newAvatar);
       setNewAvatar("");

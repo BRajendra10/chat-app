@@ -20,7 +20,7 @@ function Sidebar() {
     }, [query, users])
 
     return (
-        <div className="w-full md:w-[22rem] bg-zinc-100 border rounded-lg flex flex-col">
+        <div className="w-full md:w-[22rem] bg-zinc-100 border rounded-lg flex flex-col py-1">
             {/* Search */}
             <div className="w-full h-[4.5rem] flex justify-center items-center bg-none p-2">
                 <div className="w-full min-w-[20rem] h-[3.3rem] bg-white rounded-lg shadow-lg p-3 flex">

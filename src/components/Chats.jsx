@@ -16,9 +16,11 @@ function Chats({ currentUser, selectedUser, chatData }) {
   const [msg, setMsg] = useState({});
   const [text, setText] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
-  const [messages, setMessages] = useState(chatData?.messages || []);
+  const [messages, setMessages] = useState([]);
 
   const handleClick = () => {
+    if (!text.trim()) return; // avoid sending empty messages
+
     if (chatData) {
       if (isUpdating) {
         dispatch(updateMessage({
@@ -46,6 +48,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
           );
         });
     }
+
     setText("");
   };
 
@@ -81,7 +84,13 @@ function Chats({ currentUser, selectedUser, chatData }) {
   }, [messages]);
 
   useEffect(() => {
-    if (!chatData?.id) return
+    // Reset state when switching users/chats
+    setMessages(chatData?.messages || []);
+    setText("");
+    setIsUpdating(false);
+    setMsg({});
+
+    if (!chatData?.id) return; // no chat exists yet
 
     const q = query(collection(db, "chats", chatData.id, "message"));
 
@@ -94,7 +103,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
     });
 
     return () => unsubscribe(); // cleanup listener
-  }, [chatData?.id]);
+  }, [chatData]);
 
   return (
     <div className="flex-1 flex flex-col border rounded-lg bg-zinc-100">
