@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 
-import { fetchUsers } from './features/UsersSlice';
+import { fetchUsers } from './features/usersSlice';
 import { fetchUserChats } from './features/chatsSlice';
-import { setCurrentUser } from './features/UsersSlice';
+import { setCurrentUser } from './features/usersSlice';
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
