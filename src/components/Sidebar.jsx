@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector } from "react-redux";
-
 import { LuSearch } from "react-icons/lu";
 import { GrFormClose } from "react-icons/gr";
-
 import User from './User';
 
 function Sidebar() {

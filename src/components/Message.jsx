@@ -4,7 +4,6 @@ import { MdDelete } from "react-icons/md";
 
 function Message({ msg, currentUser, onEdit, onDelete }) {
   const [showMenu, setShowMenu] = useState(false);
-
   //TODO: Update this updating and deleting method (ui, ux)
 
   return (
@@ -14,20 +13,19 @@ function Message({ msg, currentUser, onEdit, onDelete }) {
       }`}
     >
       <div
-        className={`max-w-[25rem] px-4 py-2 rounded-2xl shadow text-sm break-words relative ${
+        className={`max-w-[25rem] px-4 py-2 flex gap-2 rounded-2xl shadow break-words relative ${
           msg.senderId === currentUser.uid
             ? "bg-orange-500 text-white"
             : "bg-gray-200 text-gray-800"
         }`}
       >
         {msg.message}
-        {msg.edited && <span className="text-xs opacity-70 ml-2">(edited)</span>}
-
+        {/* {msg.edited && <span className="text-xs opacity-70 ml-2">(edited)</span>} */}
         {/* Options button */}
         {msg.senderId === currentUser.uid && (
           <button
             onClick={() => setShowMenu((prev) => !prev)}
-            className="absolute top-1/2 -translate-y-1/2 right-1 text-lg text-white/80 hover:text-white"
+            className="text-lg text-white/80 hover:text-white"
           >
             <RiMore2Fill />
           </button>
@@ -36,7 +34,7 @@ function Message({ msg, currentUser, onEdit, onDelete }) {
 
       {/* Dropdown menu */}
       {showMenu && (
-        <div className="absolute top-full mt-1 bg-white rounded-md shadow-md border text-sm right-0 w-24 z-10">
+        <div className="absolute top-full mt-1 bg-white rounded-md shadow-md border border-white text-sm right-0 w-24 z-10">
           <button
             onClick={() => {
               setShowMenu(false);

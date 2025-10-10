@@ -24,57 +24,21 @@ function Chats({ currentUser, selectedUser, chatData }) {
 
     if (chatData) {
       if (isUpdating) {
-        dispatch(updateMessage({
-          chatId: chatData.id,
-          messageId: msg.id,
-          newText: text
-        }));
+        dispatch(updateMessage({ chatId: chatData.id, messageId: msg.id, newText: text }));
         setIsUpdating(false);
       } else {
         dispatch(sendMessage({ chatId: chatData.id, senderId: currentUser.uid, message: text }));
       }
     } else {
-      dispatch(createChat({
-        type: "direct",
-        members: [currentUser.uid, selectedUser.uid],
-      }))
+      dispatch(createChat({type: "direct",members: [currentUser.uid, selectedUser.uid]}))
         .unwrap()
         .then((newChat) => {
-          dispatch(
-            sendMessage({
-              chatId: newChat.id,
-              senderId: currentUser.uid,
-              message: text,
-            })
-          );
+          dispatch(sendMessage({ chatId: newChat.id, senderId: currentUser.uid, message: text}));
         });
     }
 
     setText("");
   };
-
-  // const deleteMsg = (msg) => {
-  //   dispatch(deleteMessage({
-  //     chatId: chatData.id,
-  //     messageId: msg.id
-  //   }));
-  // }
-
-  // const handleMsg = (msg) => {
-  //   if (!isUpdating) {
-  //     setText(msg.message);
-  //     setMsg(msg);
-  //     setIsUpdating(true);
-  //   } else {
-  //     dispatch(updateMessage({
-  //       chatId: chatData.id,
-  //       messageId: msg.id,
-  //       newText: text
-  //     }));
-  //     setText("");
-  //     setIsUpdating(false);
-  //   }
-  // }
 
   const sortedMessages = useMemo(() => {
     return [...(messages || [])].sort((a, b) => {
