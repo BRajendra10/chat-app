@@ -9,6 +9,7 @@ import { db } from "../firebase";
 import { RiPencilFill } from "react-icons/ri";
 import { MdDelete } from "react-icons/md";
 import { IoPaperPlane, IoArrowBackSharp } from "react-icons/io5";
+import Message from "./Message";
 
 function Chats({ currentUser, selectedUser, chatData }) {
   const navigate = useNavigate();
@@ -52,28 +53,28 @@ function Chats({ currentUser, selectedUser, chatData }) {
     setText("");
   };
 
-  const deleteMsg = (msg) => {
-    dispatch(deleteMessage({
-      chatId: chatData.id,
-      messageId: msg.id
-    }));
-  }
+  // const deleteMsg = (msg) => {
+  //   dispatch(deleteMessage({
+  //     chatId: chatData.id,
+  //     messageId: msg.id
+  //   }));
+  // }
 
-  const handleMsg = (msg) => {
-    if (!isUpdating) {
-      setText(msg.message);
-      setMsg(msg);
-      setIsUpdating(true);
-    } else {
-      dispatch(updateMessage({
-        chatId: chatData.id,
-        messageId: msg.id,
-        newText: text
-      }));
-      setText("");
-      setIsUpdating(false);
-    }
-  }
+  // const handleMsg = (msg) => {
+  //   if (!isUpdating) {
+  //     setText(msg.message);
+  //     setMsg(msg);
+  //     setIsUpdating(true);
+  //   } else {
+  //     dispatch(updateMessage({
+  //       chatId: chatData.id,
+  //       messageId: msg.id,
+  //       newText: text
+  //     }));
+  //     setText("");
+  //     setIsUpdating(false);
+  //   }
+  // }
 
   const sortedMessages = useMemo(() => {
     return [...(messages || [])].sort((a, b) => {
@@ -109,16 +110,18 @@ function Chats({ currentUser, selectedUser, chatData }) {
     <div className="flex-1 flex flex-col border rounded-lg bg-zinc-100">
       {/* Chat Header */}
       <div className="w-full h-[4.5rem] flex items-center gap-3 px-5 border rounded-t-lg border-gray-200 bg-white shadow-sm">
-        <button className="block md:hidden" onClick={() => navigate("/")}>
-          <IoArrowBackSharp className="text-lg" />
+        <button className="block md:hidden text-xl" onClick={() => navigate("/")}>
+          <IoArrowBackSharp />
         </button>
+
         <img src={selectedUser?.photoURL} alt="avatar" className="w-10 h-10 rounded-full object-cover bg-gray-200" />
+
         <div className="flex flex-col">
           <span className="text-lg font-medium text-gray-700">
             {selectedUser?.displayName}
           </span>
           {chatData?.lastMessage && (
-            <span className="text-xs text-gray-400">
+            <span className="w-60 text-xs text-gray-400 truncate">
               Last msg: {chatData.lastMessage.message}
             </span>
           )}
@@ -126,39 +129,41 @@ function Chats({ currentUser, selectedUser, chatData }) {
       </div>
 
       {/* Messages */}
-      <div className="w-full flex-1 overflow-y-auto p-6 space-y-5 custom-scroll">
+      <div className="w-full flex-1 overflow-y-auto p-5 flex flex-col space-y-3 custom-scroll">
         {sortedMessages.length === 0 ? (
           <p className="text-gray-400 text-sm text-center">No messages yet…</p>
         ) : (
-          sortedMessages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex flex-col ${msg.senderId === currentUser.uid ? "items-end" : "items-start"}`}
-            >
-              <div className="group relative">
-                <span></span>
-                <span className={`px-4 py-2 rounded-2xl shadow max-w-xs ${msg.senderId === currentUser.uid
-                  ? "bg-orange-500 text-white"
-                  : "bg-gray-200 text-gray-800"
-                  }`}>{msg.message}</span>
-                {msg.senderId === currentUser.uid && <div className="hidden absolute translate-y-1/2 top-1/2 max-w-xs group-hover:flex justify-start items-center">
-                  <button className="p-2 text-lg" onClick={() => handleMsg(msg)}><RiPencilFill /></button>
-                  <button className="p-2 text-lg" onClick={() => deleteMsg(msg)}><MdDelete /></button>
-                </div>}
-              </div>
-            </div>
+          sortedMessages.map((msg) => (
+            <Message
+              key={msg.id}
+              msg={msg}
+              currentUser={currentUser}
+              onEdit={(id, oldText) => {
+                const newText = prompt("Edit your message:", oldText);
+                if (newText && newText.trim()) {
+                  dispatch(updateMessage({ chatId: chatData.id, messageId: id, newText }));
+                }
+              }}
+              onDelete={(id) => {
+                if (window.confirm("Delete this message?")) {
+                  dispatch(deleteMessage({ chatId: chatData.id, messageId: id }));
+                }
+              }}
+            />
           ))
         )}
       </div>
 
+
       {/* Input */}
-      <div className="w-full h-[4.5rem] px-5 flex items-center rounded-b-lg border-gray-200 bg-white">
+      <div className="sticky bottom-0 rounded-b-lg w-full bg-white px-5 py-4 flex items-center">
         <input
           type="text"
           placeholder="Type a message..."
           className="flex-1 bg-gray-100 text-gray-800 px-4 py-2 rounded-lg outline-none placeholder-gray-400"
           value={text}
           onChange={(e) => setText(e.target.value)}
+          onFocus={() => window.scrollTo(0, document.body.scrollHeight)} // helps scroll into view on mobile
         />
         <button
           className="ml-3 bg-orange-500 hover:bg-orange-600 p-3 md:px-5 md:py-2 rounded-full text-sm text-white"
@@ -168,6 +173,7 @@ function Chats({ currentUser, selectedUser, chatData }) {
           <IoPaperPlane className="block md:hidden text-lg" />
         </button>
       </div>
+
     </div>
   );
 }

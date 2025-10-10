@@ -42,7 +42,7 @@ function Signin() {
   // };
 
   return (
-    <div className="w-[30rem] h-fit flex flex-col items-center bg-white shadow-xl rounded-xl p-5">
+    <div className="w-[23rem] md:w-[30rem] h-fit flex flex-col items-center bg-white shadow-xl rounded-xl p-5">
       <h2 className="text-2xl font-semibold mb-5">Sign In</h2>
 
       <form onSubmit={formik.handleSubmit} className="w-full h-fit flex flex-col">

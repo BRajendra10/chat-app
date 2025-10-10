@@ -13,10 +13,14 @@ function Sidebar() {
     const { currentUser } = useSelector((state) => state.users);
 
     useEffect(() => {
-        if (query) {
-            const results = users.filter((user) => user.displayName.toLowerCase().includes(query.toLowerCase()));
-            setResult(results);
-        }
+        const timer = setTimeout(() => {
+            if (query) {
+                const results = users.filter((user) => user.displayName.toLowerCase().includes(query.toLowerCase()));
+                setResult(results);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
     }, [query, users])
 
     return (
